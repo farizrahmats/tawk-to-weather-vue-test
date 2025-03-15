@@ -5,26 +5,27 @@ const API_KEY = 'c89a7be8f65883ed3c5a518747f90f33';
 const BASE_URL = 'https://api.openweathermap.org';
 const weatherUri = `${BASE_URL}/data/2.5/weather`;
 const forcastUri = `${BASE_URL}/data/2.5/forecast`;
+const geoUri = `${BASE_URL}/geo/1.0/direct`;
 
 // State untuk menyimpan daftar laporan cuaca
 const weatherReports = ref<any[]>([]);
 
 export const useWeatherService = () => {
     // Fetch daftar kota berdasarkan pencarian (Geocoding API)
-    const fetchCities = async (query: string) => {
-        if (!query) return [];
+    // const fetchCities = async (query: string) => {
+    //     if (!query) return [];
 
-        const apiUrl = `${BASE_URL}/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`;
+    //     const apiUrl = `${BASE_URL}/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`;
 
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('Gagal mengambil data kota');
-            return await response.json();
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
-    };
+    //     try {
+    //         const response = await fetch(apiUrl);
+    //         if (!response.ok) throw new Error('Gagal mengambil data kota');
+    //         return await response.json();
+    //     } catch (error) {
+    //         console.error(error);
+    //         return [];
+    //     }
+    // };
 
     // // Fetch data cuaca berdasarkan koordinat (Weather API)
     const fetchWeather = async (lat: number, lon: number, city: string) => {
@@ -70,6 +71,16 @@ export const useWeatherService = () => {
             return error;
         }
     }
+
+    const fetchCities = async (city: string) => {
+        try {
+            return await axios.get(geoUri, {
+                params: { q: city, limit: 5, appid: API_KEY }
+            })
+        } catch (error) {
+            return error;
+        }
+    };
 
     const fetchWeatherDetail = async (city: string) => {
         try {

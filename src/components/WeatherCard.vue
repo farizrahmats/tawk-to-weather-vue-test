@@ -1,5 +1,33 @@
+<template>
+    <div
+        class="bg-blue-600 text-white p-4 rounded-xl shadow-lg relative"
+        @click="emitDetail"
+    >
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-lg font-bold">{{ city }}</h2>
+                <!-- <p v-if="region" class="text-sm">{{ region }}</p> -->
+                <p v-if="formattedTime" class="text-sm">{{ formattedTime }}</p>
+            </div>
+            <div class="text-4xl font-bold">
+                {{ Math.round(weather.main.temp) }}°C
+            </div>
+        </div>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-sm mt-1">{{ weather.weather[0].description }}</p>
+            </div>
+            <div class="text-xs mt-2">
+                H:{{ highPressureDegree.toFixed(2) }}° L:{{
+                    lowPressureDegree.toFixed(2)
+                }}°
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup lang="ts">
-import { ref, computed, watch, defineEmits } from "vue";
+import { computed, defineEmits } from "vue";
 import type { PropType } from "vue";
 
 const props = defineProps({
@@ -17,28 +45,33 @@ const getWeatherIcon = (icon: string) => {
     return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 };
 
+const formattedTime = computed(() => {
+    console.log(props.weather);
+    return new Date(props.weather.dt * 1000).toLocaleTimeString();
+});
+
 // Hitung waktu lokal berdasarkan timezone offset dari API
-const localTime = ref("");
+// const localTime = ref("");
 
-const updateTime = () => {
-    if (props.weather) {
-        const timezoneOffset = props.weather.timezone; // Offset dalam detik
-        const utcTime =
-            new Date().getTime() + new Date().getTimezoneOffset() * 60000;
-        const cityTime = new Date(utcTime + timezoneOffset * 1000);
+// const updateTime = () => {
+//     if (props.weather) {
+//         const timezoneOffset = props.weather.timezone; // Offset dalam detik
+//         const utcTime =
+//             new Date().getTime() + new Date().getTimezoneOffset() * 60000;
+//         const cityTime = new Date(utcTime + timezoneOffset * 1000);
 
-        localTime.value = new Intl.DateTimeFormat("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            timeZoneName: "short",
-        }).format(cityTime);
-    }
-};
+//         localTime.value = new Intl.DateTimeFormat("en-GB", {
+//             hour: "2-digit",
+//             minute: "2-digit",
+//             second: "2-digit",
+//             timeZoneName: "short",
+//         }).format(cityTime);
+//     }
+// };
 
 // Update waktu setiap detik
-watch(() => props.weather, updateTime, { immediate: true });
-setInterval(updateTime, 1000);
+// watch(() => props.weather, updateTime, { immediate: true });
+// setInterval(updateTime, 1000);
 
 // Konversi tekanan udara ke "derajat" berdasarkan perubahan ketinggian
 const basePressure = 1013.25; // Tekanan udara standar di permukaan laut dalam hPa
@@ -68,30 +101,6 @@ function convertPressureToDegree(pressure: number): number {
     return heightDifference / 100;
 }
 </script>
-
-<template>
-    <div
-        class="relative p-6 rounded-lg bg-gray-800 bg-opacity-80 text-white overflow-hidden shadow-lg"
-        :style="{ backgroundImage: `url(${city})`, backgroundSize: 'cover' }"
-    >
-        <div class="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
-        <div class="relative z-10">
-            <p class="text-lg font-semibold">{{ city }}</p>
-            <p class="text-sm text-gray-300">{{ city.location }}</p>
-
-            <div class="flex items-center justify-between mt-3">
-                <p class="text-3xl font-bold">{{ city.temp }}°</p>
-                <p class="text-xs">{{ weather.weather[0].description }}</p>
-            </div>
-
-            <div class="mt-2 text-xs text-gray-300">
-                H:{{ highPressureDegree.toFixed(2) }}° L:{{
-                    lowPressureDegree.toFixed(2)
-                }}°
-            </div>
-        </div>
-    </div>
-</template>
 
 <!-- <template>
     <div class="weather-card" @click="emitDetail">
