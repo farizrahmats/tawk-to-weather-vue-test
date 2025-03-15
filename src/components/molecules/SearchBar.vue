@@ -32,10 +32,9 @@ const selectCity = (city: any) => {
         <input
             v-model="searchQuery"
             type="text"
-            placeholder="Cari kota..."
-            class="search-input"
+            placeholder="🔍 Search for a city"
+            class="w-full p-3 mt-4 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white focus:outline-none"
         />
-
         <ul v-if="cityList.length" class="suggestions">
             <li
                 v-for="city in cityList"
@@ -47,37 +46,3 @@ const selectCity = (city: any) => {
         </ul>
     </div>
 </template>
-
-<style scoped>
-.search-container {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-}
-.search-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-.suggestions {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-height: 150px;
-    overflow-y: auto;
-    background: white;
-    position: absolute;
-    width: 100%;
-}
-.suggestions li {
-    padding: 10px;
-    cursor: pointer;
-}
-.suggestions li:hover {
-    background: #f0f0f0;
-}
-</style>

@@ -70,10 +70,34 @@ function convertPressureToDegree(pressure: number): number {
 </script>
 
 <template>
+    <div
+        class="relative p-6 rounded-lg bg-gray-800 bg-opacity-80 text-white overflow-hidden shadow-lg"
+        :style="{ backgroundImage: `url(${city})`, backgroundSize: 'cover' }"
+    >
+        <div class="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
+        <div class="relative z-10">
+            <p class="text-lg font-semibold">{{ city }}</p>
+            <p class="text-sm text-gray-300">{{ city.location }}</p>
+
+            <div class="flex items-center justify-between mt-3">
+                <p class="text-3xl font-bold">{{ city.temp }}°</p>
+                <p class="text-xs">{{ weather.weather[0].description }}</p>
+            </div>
+
+            <div class="mt-2 text-xs text-gray-300">
+                H:{{ highPressureDegree.toFixed(2) }}° L:{{
+                    lowPressureDegree.toFixed(2)
+                }}°
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- <template>
     <div class="weather-card" @click="emitDetail">
         <h2>{{ city }}</h2>
 
-        <!-- Waktu Lokal -->
+        Waktu Lokal
         <p class="time">{{ localTime }}</p>
 
         <div class="weather-info">
@@ -91,7 +115,7 @@ function convertPressureToDegree(pressure: number): number {
             <p><strong>Humidity:</strong> {{ weather.main.humidity }}%</p>
             <p><strong>Wind:</strong> {{ weather.wind.speed }} m/s</p>
 
-            <!-- High & Low Pressure dalam bentuk derajat -->
+            High & Low Pressure dalam bentuk derajat
             <p>
                 <strong>High Pressure:</strong>
                 {{ highPressureDegree.toFixed(2) }}°
@@ -102,10 +126,10 @@ function convertPressureToDegree(pressure: number): number {
             </p>
         </div>
     </div>
-</template>
+</template> -->
 
 <style scoped>
-.weather-card {
+/* .weather-card {
     background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -146,5 +170,5 @@ h2 {
 .weather-details p {
     margin: 5px 0;
     font-size: 14px;
-}
+} */
 </style>
