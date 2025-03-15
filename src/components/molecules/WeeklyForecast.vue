@@ -1,16 +1,24 @@
 <template>
     <div>
-        <h3>Weekly Forecast</h3>
-        <div class="forecast">
-            <div
-                v-for="day in weeklyForecast"
-                :key="day.dt"
-                class="forecast-item"
-            >
-                <p>{{ formatDay(day.dt) }}</p>
-                <img :src="getWeatherIcon(day.weather[0].icon)" />
-                <p>{{ Math.round(day.main.temp) }}°C</p>
+        <div
+            class="flex items-center justify-between bg-blue-100 p-3 rounded-lg shadow m-2"
+            v-for="day in weeklyForecast"
+            :key="day.dt"
+        >
+            <div class="flex items-center space-x-3">
+                <img
+                    :src="getWeatherIcon(day.weather[0].icon)"
+                    :alt="day"
+                    class="w-10 h-10"
+                />
+                <div>
+                    <p class="text-sm font-medium">{{ formatDay(day.dt) }}</p>
+                    <p class="text-xs text-gray-600">
+                        {{ day.weather[0].description }}
+                    </p>
+                </div>
             </div>
+            <p class="text-lg font-bold">{{ Math.round(day.main.temp) }}°C</p>
         </div>
     </div>
 </template>
@@ -29,17 +37,4 @@ const formatDay = (timestamp: number) =>
     });
 </script>
 
-<style scoped>
-.forecast {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    margin: 10px 0;
-}
-.forecast-item {
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-</style>
+<style scoped></style>

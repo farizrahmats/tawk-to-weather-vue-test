@@ -1,6 +1,6 @@
 <template>
     <div
-        class="weather-dashboard min-h-screen bg-gray-100 flex justify-center items-top p-4"
+        class="weather-dashboard min-h-screen bg-gray-100 flex justify-center items-top md:p-4"
     >
         <div
             class="weather-dashboard__container h-full min-h-screen w-full max-w-md bg-white p-6 rounded-xl shadow-lg"

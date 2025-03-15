@@ -16,9 +16,7 @@ export const useWeatherStore = defineStore('weather', () => {
         error.value = null;
         try {
             const response = await fetchWeatherCity(city);
-            console.log(response.data);
             weatherReports.value.unshift(response.data);
-            console.log(weatherReports.value);
         } catch (err) {
             error.value = 'Failed to fetch weather data';
         } finally {
@@ -31,7 +29,7 @@ export const useWeatherStore = defineStore('weather', () => {
         error.value = null;
         try {
             const response = await fetchWeatherCity(city);
-            weatherDetail.value = [...response.data];
+            weatherDetail.value = { ...response.data };
         } catch (err) {
             error.value = 'Failed to fetch weather data';
         } finally {
@@ -44,7 +42,7 @@ export const useWeatherStore = defineStore('weather', () => {
         error.value = null;
         try {
             const response = await fetchForecast(city);
-            forecast.value = [...response.data];
+            forecast.value = { ...response.data };
         } catch (err) {
             error.value = 'Failed to fetch forecast data';
         } finally {

@@ -1,38 +1,72 @@
 <template>
-    <div class="detail-view">
-        <button @click="router.push('/')">← Back</button>
+    <div
+        class="weather-dashboard min-h-screen bg-gray-100 flex justify-center items-top md:p-4"
+    >
+        <div
+            class="weather-dashboard__container h-full min-h-screen w-full max-w-md bg-white rounded-xl shadow-lg"
+        >
+            <!-- Weather Detail Section -->
+            <div
+                class="weather-detail bg-gradient-to-b from-blue-500 to-blue-400 text-white p-6 shadow-lg text-center"
+                v-if="weather"
+            >
+                <button @click="router.push('/')">← Back</button>
+                <h2 class="weather-detail__location text-lg font-semibold">
+                    {{ weather.name }}
+                </h2>
+                <p class="weather-detail__date text-sm">
+                    Monday, 20 December 2021
+                </p>
+                <div
+                    class="weather-detail__icon my-4 flex flex-col items-center"
+                >
+                    <img
+                        class="w-16 h-16"
+                        :src="getWeatherIcon(weather.weather[0].icon)"
+                        :alt="weather.weather[0].description"
+                    />
+                    <p class="weather-detail__temperature text-4xl font-bold">
+                        {{ Math.round(weather.main.temp) }}°C
+                    </p>
+                    <p class="weather-detail__description text-lg">
+                        {{ weather.weather[0].description }}
+                    </p>
+                </div>
+                <p class="weather-detail__update text-xs">
+                    Last Update: {{ formattedTime }}
+                </p>
+            </div>
 
-        <h2>{{ city }}</h2>
+            <div class="p-6">
+                <!-- Hourly Forecast -->
+                <div class="hourly-forecast mt-4">
+                    <h3 class="hourly-forecast__title text-lg font-bold">
+                        Hourly Forecast
+                    </h3>
+                    <div
+                        class="hourly-forecast__list flex space-x-4 mt-2 overflow-x-auto"
+                    >
+                        <HourlyForecast :hourlyForecast="hourlyForecast" />
+                    </div>
+                </div>
 
-        <p v-if="loading">Loading...</p>
-        <div v-if="weather">
-            <p>
-                <strong>Condition:</strong> {{ weather.weather[0].description }}
-            </p>
-            <img
-                :src="getWeatherIcon(weather.weather[0].icon)"
-                :alt="weather.weather[0].description"
-            />
-            <p>
-                <strong>Temperature:</strong>
-                {{ Math.round(weather.main.temp) }}°C
-            </p>
-            <p><strong>Last Updated:</strong> {{ formattedTime }}</p>
-
-            <!-- Hourly Forecast Component -->
-            <HourlyForecast :hourlyForecast="hourlyForecast" />
-
-            <!-- Weekly Forecast Component -->
-            <WeeklyForecast :weeklyForecast="weeklyForecast" />
+                <!-- Weekly Forecast -->
+                <div class="weekly-forecast mt-4">
+                    <h3 class="weekly-forecast__title text-lg font-bold">
+                        Weekly Forecast
+                    </h3>
+                    <div class="weekly-forecast__list mt-2 space-y-2">
+                        <WeeklyForecast :weeklyForecast="weeklyForecast" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <p v-else>Error fetching weather data.</p>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, defineProps, watchEffect, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useWeatherService } from "@/services/WeatherService";
 import { useWeatherStore } from "../store/weatherStore";
 import HourlyForecast from "../components/molecules/HourlyForecast.vue";
 import WeeklyForecast from "../components/molecules/WeeklyForecast.vue";
@@ -40,22 +74,17 @@ import WeeklyForecast from "../components/molecules/WeeklyForecast.vue";
 const route = useRoute();
 const router = useRouter();
 const city = route.params.city as string;
+const weatherStore = useWeatherStore();
 
-// const { weatherReports, fetchWeather } = useWeatherService();
-const {
-    weatherReports,
-    forecast,
-    weatherDetail,
-    getWeatherDetail,
-    getForecastHourly,
-} = useWeatherStore();
-const weather = computed(() => weatherDetail);
+const weather = computed(() => weatherStore.weatherDetail);
 
 // Compute hourly and weekly forecasts
-const hourlyForecast = computed(() => forecast?.list?.slice(0, 6) || []);
+const hourlyForecast = computed(
+    () => weatherStore.forecast?.list?.slice(0, 6) || []
+);
 const weeklyForecast = computed(() => {
     const days: any = {};
-    return (forecast?.list || [])
+    return (weatherStore.forecast?.list || [])
         .filter((item: any) => {
             const date = new Date(item.dt * 1000).toDateString();
             if (!days[date]) {
@@ -72,17 +101,16 @@ const loading = ref(true);
 // Fetch data if not available
 const fetchWeatherDetail = async () => {
     loading.value = true;
-    await getWeatherDetail(city);
-    await getForecastHourly(city);
+    await weatherStore.getWeatherDetail(city);
+    await weatherStore.getForecastHourly(city);
     loading.value = false;
 };
 
 // Ensure the data is set on refresh
 onMounted(async () => {
-    if (!weatherDetail) {
+    if (weather.value === undefined) {
         await fetchWeatherDetail();
     }
-    console.log(weatherDetail, forecast);
 });
 
 // watch(
@@ -102,17 +130,6 @@ const formattedTime = computed(() =>
 
 const getWeatherIcon = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
-
-const formatHour = (timestamp: number) =>
-    new Date(timestamp * 1000).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-
-const formatDay = (timestamp: number) =>
-    new Date(timestamp * 1000).toLocaleDateString("en-US", {
-        weekday: "short",
-    });
 </script>
 
 <style scoped>

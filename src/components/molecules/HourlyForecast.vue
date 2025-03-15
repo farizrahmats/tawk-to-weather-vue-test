@@ -1,15 +1,20 @@
 <template>
     <div>
-        <h3>Hourly Forecast</h3>
-        <div class="forecast">
+        <div class="flex justify-around gap-1 m-10">
             <div
+                class="flex flex-col items-center bg-white p-2 rounded-lg shadow"
                 v-for="hour in hourlyForecast"
                 :key="hour.dt"
-                class="forecast-item"
             >
-                <p>{{ formatHour(hour.dt) }}</p>
-                <img :src="getWeatherIcon(hour.weather[0].icon)" />
-                <p>{{ Math.round(hour.main.temp) }}°C</p>
+                <img
+                    :src="getWeatherIcon(hour.weather[0].icon)"
+                    :alt="formatHour(hour.dt)"
+                    class="w-12 h-12"
+                />
+                <p class="text-sm font-medium">{{ formatHour(hour.dt) }}</p>
+                <p class="text-lg font-bold">
+                    {{ Math.round(hour.main.temp) }}°C
+                </p>
             </div>
         </div>
     </div>
@@ -30,17 +35,4 @@ const formatHour = (timestamp: number) =>
     });
 </script>
 
-<style scoped>
-.forecast {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    margin: 10px 0;
-}
-.forecast-item {
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-</style>
+<style scoped></style>
