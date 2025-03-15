@@ -1,23 +1,39 @@
 <script setup lang="ts">
-import { useWeatherStore } from "../store/weatherStore";
-import SearchBar from "../components/molecules/SearchBar.vue";
+import { useRouter } from "vue-router";
+import { useWeatherService } from "@/services/WeatherService";
+import SearchBar from "@/components/molecules/SearchBar.vue";
+import WeatherCard from "@/components/WeatherCard.vue";
 
-const weatherStore = useWeatherStore();
+const router = useRouter();
 
-const searchWeather = (city: string) => {
-    weatherStore.getWeather(city);
+const { weatherReports, fetchWeather } = useWeatherService();
+
+const goToDetail = (city: string) => {
+    router.push(`/detail/${city}`);
 };
 </script>
 
 <template>
     <div>
-        <SearchBar @search="searchWeather" />
-        <div v-if="weatherStore.loading">Loading...</div>
-        <div v-else-if="weatherStore.error">{{ weatherStore.error }}</div>
-        <div v-else-if="weatherStore.weatherData">
-            <h2>{{ weatherStore.weatherData.name }}</h2>
-            <p>{{ weatherStore.weatherData.main.temp }}°C</p>
-            <p>{{ weatherStore.weatherData.weather[0].description }}</p>
+        <SearchBar @search="fetchWeather" />
+
+        <div class="weather-container">
+            <WeatherCard
+                v-for="weather in weatherReports"
+                :key="weather.id"
+                :city="weather.city"
+                :weather="weather"
+                @showDetail="goToDetail"
+            />
         </div>
     </div>
 </template>
+
+<style scoped>
+.weather-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+</style>

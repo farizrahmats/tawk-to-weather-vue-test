@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { getCityCoordinates, fetchWeather } from '../services/weatherService';
+import { useWeatherService } from "@/services/WeatherService";
 
 export const useWeatherStore = defineStore('weather', () => {
-    const weatherData = ref(null);
+    const { fetchWeather, fetchWeatherCity, fetchForecast } = useWeatherService();
+    const weatherReports = ref<any[]>([]); // Ubah menjadi array untuk menyimpan banyak laporan
+    const weatherDetail = ref<any>();
+    const forecast = ref<any>(); // Ubah menjadi array untuk menyimpan banyak laporan
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -11,8 +14,8 @@ export const useWeatherStore = defineStore('weather', () => {
         loading.value = true;
         error.value = null;
         try {
-            const { lat, lon } = await getCityCoordinates(city);
-            weatherData.value = await fetchWeather(lat, lon);
+            const weather = await fetchWeather(city);
+            weatherReports.value.unshift(weather); // Tambahkan ke awal daftar (data terbaru di atas)
         } catch (err) {
             error.value = 'Failed to fetch weather data';
         } finally {
@@ -20,5 +23,33 @@ export const useWeatherStore = defineStore('weather', () => {
         }
     };
 
-    return { weatherData, loading, error, getWeather };
+
+    const getWeatherDetail = async (city: string) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const response = await fetchWeatherCity(city);
+            weatherDetail.value = response.data;
+        } catch (err) {
+            error.value = 'Failed to fetch weather data';
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const getForecastHourly = async (city: string) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            const response = await fetchForecast(city);
+            forecast.value = response.data;
+            console.log(forecast.value)
+        } catch (err) {
+            error.value = 'Failed to fetch forecast data';
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    return { weatherReports, weatherDetail, forecast, loading, error, getWeather, getWeatherDetail, getForecastHourly };
 });
