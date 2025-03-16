@@ -1,6 +1,7 @@
 <template>
     <div
-        class="bg-blue-600 text-white p-4 rounded-xl shadow-lg relative"
+        :style="backgroundStyle"
+        class="text-white p-4 rounded-xl shadow-lg relative"
         @click="emitDetail"
     >
         <div class="flex justify-between items-center">
@@ -29,6 +30,9 @@
 import { computed, defineEmits } from "vue";
 import type { PropType } from "vue";
 
+import dayImage from "@/assets/day.png";
+import nightImage from "@/assets/night.png";
+
 const props = defineProps({
     city: String,
     weather: Object as PropType<any>, // Bisa disesuaikan jika ada interface TypeScript
@@ -40,12 +44,60 @@ const emitDetail = () => {
     emit("showDetail", props.city);
 };
 
-const getWeatherIcon = (icon: string) => {
-    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
-};
-
 const formattedTime = computed(() => {
-    return new Date(props.weather.dt * 1000).toLocaleTimeString();
+    if (!props.weather.dt || !props.weather.timezone) return "Unknown Time";
+
+    const utcTime = props.weather.dt * 1000; // Convert seconds to milliseconds
+    const localTime = utcTime + props.weather.timezone * 1000; // ✅ Add timezone offset
+
+    return new Date(localTime).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
+});
+
+const backgroundStyle = computed(() => {
+    if (!formattedTime.value) return { backgroundImage: `url(${dayImage})` };
+
+    const hour = parseInt(formattedTime.value.split(":")[0]);
+    const isPM = formattedTime.value.includes("PM");
+
+    // Convert to 24-hour format
+    const militaryHour = isPM
+        ? hour === 12
+            ? 12
+            : hour + 12
+        : hour === 12
+        ? 0
+        : hour;
+
+    return {
+        backgroundImage: `url(${
+            militaryHour >= 6 && militaryHour < 18 ? dayImage : nightImage
+        })`,
+    };
+});
+
+const backgroundClass = computed(() => {
+    if (!formattedTime.value) return "bg-gray-500"; // Default background
+
+    // Extract hour from formattedTime (e.g., "07:30 AM")
+    const hour = parseInt(formattedTime.value.split(":")[0]);
+    const isPM = formattedTime.value.includes("PM");
+
+    // Convert 12-hour format to 24-hour format
+    const militaryHour = isPM
+        ? hour === 12
+            ? 12
+            : hour + 12
+        : hour === 12
+        ? 0
+        : hour;
+
+    return militaryHour >= 6 && militaryHour < 18
+        ? "bg-blue-500"
+        : "bg-gray-800";
 });
 
 // Konversi tekanan udara ke "derajat" berdasarkan perubahan ketinggian

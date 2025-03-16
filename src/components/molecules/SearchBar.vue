@@ -5,7 +5,7 @@
                 type="text"
                 v-model="searchQuery"
                 placeholder="Search for a city airport"
-                class="weather-dashboard__input w-full p-2 pl-10 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="weather-dashboard__input w-full p-2 pl-10 bg-[#f5f5f5] border-[#f5f5f5] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <svg
                 class="absolute left-3 top-2.5 w-5 h-5 text-gray-500"
@@ -21,6 +21,15 @@
                     d="M21 21l-4.35-4.35m-3.65-1.65a7 7 0 1 0-10.01 0 7 7 0 0 0 10.01 0z"
                 ></path>
             </svg>
+
+            <!-- Right Clear Button (Shows only when text is entered) -->
+            <button
+                v-if="searchQuery"
+                @click="clearSearch"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 hover:text-gray-700"
+            >
+                <img :src="clearIco" alt="Clear Icon" class="w-5 h-5" />
+            </button>
         </div>
         <ul
             v-if="cityList.length"
@@ -29,10 +38,11 @@
             <li
                 v-for="city in cityList"
                 :key="city"
-                class="p-2 hover:bg-gray-100 cursor-pointer border-b border-dashed last:border-none"
+                class="p-2 hover:bg-gray-100 cursor-pointer border-b border-dashed last:border-none text-sm"
                 @click="selectCity(city)"
             >
-                {{ city.name }}, {{ city.country }}
+                <strong>{{ city.name }}</strong
+                >, {{ city.country }}
             </li>
         </ul>
     </div>
@@ -43,8 +53,9 @@ import { computed, ref, watch } from "vue";
 import { useWeatherStore } from "@/store/WeatherStore";
 import debounce from "lodash/debounce";
 
-const weatherStore = useWeatherStore();
+import clearIco from "@/assets/clear.svg";
 
+const weatherStore = useWeatherStore();
 const searchQuery = ref("");
 
 const cityList = computed(() => {
@@ -60,6 +71,11 @@ const debouncedFetchCities = debounce(async (query: string) => {
 const selectCity = (city: any) => {
     searchQuery.value = "";
     emit("search", city.name);
+    weatherStore.cities = [];
+};
+
+const clearSearch = () => {
+    searchQuery.value = "";
     weatherStore.cities = [];
 };
 
