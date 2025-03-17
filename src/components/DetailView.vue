@@ -7,32 +7,33 @@
         >
             <!-- Weather Detail Section -->
             <div
-                class="weather-detail bg-gradient-to-b from-blue-500 to-blue-400 text-white p-6 shadow-lg text-center"
+                class="weather-detail bg-custom-gradient text-white p-6 shadow-lg text-center"
                 v-if="weather"
             >
-                <button @click="router.push('/')">← Back</button>
-                <h2 class="weather-detail__location text-lg font-semibold">
-                    {{ weather.name }}
-                </h2>
-                <p class="weather-detail__date text-sm">
-                    Monday, 20 December 2021
+                <div class="flex flex-row justify-between justify-items-center">
+                    <button @click="router.push('/')">❮</button>
+                    <h2 class="weather-detail__location text-sm font-semibold">
+                        {{ weather.name }}
+                    </h2>
+                    <img :src="trashIco" alt="Trash Icon" class="w-4 h-4" />
+                </div>
+                <p class="weather-detail__date text-sm mt-6">
+                    {{ formattedDate }}
                 </p>
-                <div
-                    class="weather-detail__icon my-4 flex flex-col items-center"
-                >
+                <div class="weather-detail__icon flex flex-col items-center">
                     <img
-                        class="w-16 h-16"
+                        class="w-20 h-auto"
                         :src="getWeatherIcon(weather.weather[0].icon)"
                         :alt="weather.weather[0].description"
                     />
-                    <p class="weather-detail__temperature text-4xl font-bold">
+                    <p class="weather-detail__temperature text-xl">
                         {{ Math.round(weather.main.temp) }}°C
                     </p>
-                    <p class="weather-detail__description text-lg">
+                    <p class="weather-detail__description text-xl font-bold">
                         {{ weather.weather[0].description }}
                     </p>
                 </div>
-                <p class="weather-detail__update text-xs">
+                <p class="weather-detail__update text-xs mt-4">
                     Last Update: {{ formattedTime }}
                 </p>
             </div>
@@ -40,19 +41,17 @@
             <div class="p-6">
                 <!-- Hourly Forecast -->
                 <div class="hourly-forecast mt-4">
-                    <h3 class="hourly-forecast__title text-lg font-bold">
+                    <h3 class="hourly-forecast__title text-lg mb-4">
                         Hourly Forecast
                     </h3>
-                    <div
-                        class="hourly-forecast__list flex space-x-4 mt-2 overflow-x-auto"
-                    >
+                    <div class="hourly-forecast__list">
                         <HourlyForecast :hourlyForecast="hourlyForecast" />
                     </div>
                 </div>
 
                 <!-- Weekly Forecast -->
-                <div class="weekly-forecast mt-4">
-                    <h3 class="weekly-forecast__title text-lg font-bold">
+                <div class="weekly-forecast mt-10">
+                    <h3 class="weekly-forecast__title text-lg mb-4">
                         Weekly Forecast
                     </h3>
                     <div class="weekly-forecast__list mt-2 space-y-2">
@@ -68,8 +67,10 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useWeatherStore } from "../store/weatherStore";
+
 import HourlyForecast from "../components/molecules/HourlyForecast.vue";
 import WeeklyForecast from "../components/molecules/WeeklyForecast.vue";
+import trashIco from "@/assets/trash.svg";
 
 const route = useRoute();
 const router = useRouter();
@@ -80,7 +81,7 @@ const weather = computed(() => weatherStore.weatherDetail);
 
 // Compute hourly and weekly forecasts
 const hourlyForecast = computed(
-    () => weatherStore.forecast?.list?.slice(0, 6) || []
+    () => weatherStore.forecast?.list?.slice(0, 4) || []
 );
 const weeklyForecast = computed(() => {
     const days: any = {};
@@ -108,21 +109,17 @@ const fetchWeatherDetail = async () => {
 
 // Ensure the data is set on refresh
 onMounted(async () => {
-    if (weather.value === undefined) {
-        await fetchWeatherDetail();
-    }
+    await fetchWeatherDetail();
 });
 
-// watch(
-//     () => weatherDetail,
-//     (newWeather) => {
-//         if (newWeather) {
-//             weather.value = newWeather;
-//             console.log(weather.value);
-//         }
-//     },
-//     { immediate: true }
-// );
+const formattedDate = computed(() => {
+    return new Date(weather.value?.dt * 1000).toLocaleString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+});
 
 const formattedTime = computed(() =>
     new Date(weather.value?.dt * 1000).toLocaleTimeString()
@@ -133,24 +130,12 @@ const getWeatherIcon = (icon: string) =>
 </script>
 
 <style scoped>
-.detail-view {
-    max-width: 600px;
-    margin: auto;
-    text-align: center;
-}
-button {
-    margin-bottom: 20px;
-}
-.forecast {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    margin: 10px 0;
-}
-.forecast-item {
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.bg-custom-gradient {
+    background: linear-gradient(
+        118.25deg,
+        #4f80fa 1.2%,
+        #3764d7 59.26%,
+        #335fd1 79.2%
+    );
 }
 </style>

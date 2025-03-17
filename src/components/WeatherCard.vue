@@ -76,6 +76,7 @@ const backgroundStyle = computed(() => {
         backgroundImage: `url(${
             militaryHour >= 6 && militaryHour < 18 ? dayImage : nightImage
         })`,
+        backgroundSize: "cover",
     };
 });
 

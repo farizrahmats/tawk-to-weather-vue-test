@@ -1,20 +1,18 @@
 <template>
     <div>
-        <div class="flex justify-around gap-1 m-10">
+        <div class="flex justify-around gap-1 space-x-4">
             <div
-                class="flex flex-col items-center bg-white p-2 rounded-lg shadow"
+                class="flex flex-col items-center bg-[#f5f5f5] p-3 rounded-lg shadow"
                 v-for="hour in hourlyForecast"
                 :key="hour.dt"
             >
                 <img
                     :src="getWeatherIcon(hour.weather[0].icon)"
                     :alt="formatHour(hour.dt)"
-                    class="w-12 h-12"
+                    class="w-14 h-auto"
                 />
+                <p class="text-lg">{{ Math.round(hour.main.temp) }}°</p>
                 <p class="text-sm font-medium">{{ formatHour(hour.dt) }}</p>
-                <p class="text-lg font-bold">
-                    {{ Math.round(hour.main.temp) }}°C
-                </p>
             </div>
         </div>
     </div>
