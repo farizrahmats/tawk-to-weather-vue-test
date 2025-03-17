@@ -38,7 +38,7 @@
 import { useRouter } from "vue-router";
 import { useWeatherStore } from "@/store/weatherStore";
 import SearchBar from "@/components/molecules/SearchBar.vue";
-import WeatherCard from "@/components/WeatherCard.vue";
+import WeatherCard from "@/views/Weather/List/WeatherCard.vue";
 import Icon from "@/components/atoms/Icon.vue";
 
 import userIco from "@/assets/icon/user.svg";
@@ -51,6 +51,6 @@ const goToDetail = (city: string) => {
 };
 
 const goToProfile = () => {
-    router.push(`/form`);
+    router.push(`/profile`);
 };
 </script>

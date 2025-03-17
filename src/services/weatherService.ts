@@ -1,46 +1,12 @@
-import { ref } from 'vue';
 import axios from 'axios';
 
-const API_KEY = 'c89a7be8f65883ed3c5a518747f90f33';
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org';
 const weatherUri = `${BASE_URL}/data/2.5/weather`;
 const forcastUri = `${BASE_URL}/data/2.5/forecast`;
 const geoUri = `${BASE_URL}/geo/1.0/direct`;
 
-// State untuk menyimpan daftar laporan cuaca
-const weatherReports = ref<any[]>([]);
-
 export const useWeatherService = () => {
-    // Fetch daftar kota berdasarkan pencarian (Geocoding API)
-    // const fetchCities = async (query: string) => {
-    //     if (!query) return [];
-
-    //     const apiUrl = `${BASE_URL}/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`;
-
-    //     try {
-    //         const response = await fetch(apiUrl);
-    //         if (!response.ok) throw new Error('Gagal mengambil data kota');
-    //         return await response.json();
-    //     } catch (error) {
-    //         console.error(error);
-    //         return [];
-    //     }
-    // };
-
-    // // Fetch data cuaca berdasarkan koordinat (Weather API)
-    const fetchWeather = async (lat: number, lon: number, city: string) => {
-        const apiUrl = `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error('Gagal mengambil data cuaca');
-            const data = await response.json();
-            data.city = city; // Tambahkan nama kota
-            weatherReports.value.push(data); // Tambahkan data baru ke state
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const fetchWeatherLatLong = async (lat: number, lon: number) => {
         try {
@@ -106,5 +72,5 @@ export const useWeatherService = () => {
         }
     };
 
-    return { weatherReports, fetchWeatherLatLong, fetchWeatherCity, fetchForecast, fetchCities, fetchWeather, fetchWeatherDetail };
+    return { fetchWeatherLatLong, fetchWeatherCity, fetchForecast, fetchCities, fetchWeatherDetail };
 };

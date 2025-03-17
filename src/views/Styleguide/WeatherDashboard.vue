@@ -161,9 +161,9 @@
 
 <script setup>
 import { ref } from "vue";
-import WeatherCard2 from "@/components/WeatherCard2.vue";
-import HourlyForecast from "@/components/HourlyForecast.vue";
-import WeeklyForecast from "@/components/WeeklyForecast.vue";
+import WeatherCard2 from "@/views/StyleGuide/WeatherCard2.vue";
+import HourlyForecast from "@/views/StyleGuide/HourlyForecast.vue";
+import WeeklyForecast from "@/views/StyleGuide/WeeklyForecast.vue";
 
 const searchQuery = ref("");
 const suggestions = ref([]);
