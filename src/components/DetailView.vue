@@ -11,14 +11,15 @@
                 v-if="weather"
             >
                 <div class="flex flex-row justify-between justify-items-center">
-                    <button @click="router.push('/')">❮</button>
+                    <button @click="router.push('/')" class="cursor-pointer">
+                        ❮
+                    </button>
                     <h2 class="weather-detail__location text-sm font-semibold">
                         {{ weather.name }}
                     </h2>
-                    <img
-                        :src="trashIco"
+                    <Icon
+                        :icon="trashIco"
                         alt="Trash Icon"
-                        class="w-4 h-4"
                         @click="deleteWeather(weather.name)"
                     />
                 </div>
@@ -71,11 +72,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useWeatherStore } from "../store/weatherStore";
+import { useWeatherStore } from "@/store/weatherStore";
 
-import HourlyForecast from "../components/molecules/HourlyForecast.vue";
-import WeeklyForecast from "../components/molecules/WeeklyForecast.vue";
-import trashIco from "@/assets/trash.svg";
+import HourlyForecast from "@/components/molecules/HourlyForecast.vue";
+import WeeklyForecast from "@/components/molecules/WeeklyForecast.vue";
+import Icon from "@/components/atoms/Icon.vue";
+import trashIco from "@/assets/icon/trash.svg";
 
 const route = useRoute();
 const router = useRouter();

@@ -1,7 +1,7 @@
 <template>
     <div
         :style="backgroundStyle"
-        class="text-white p-4 rounded-xl shadow-lg relative"
+        class="text-white p-4 rounded-xl shadow-lg relative cursor-pointer"
         @click="emitDetail"
     >
         <div class="flex justify-between items-center">
@@ -30,8 +30,8 @@
 import { computed, defineEmits } from "vue";
 import type { PropType } from "vue";
 
-import dayImage from "@/assets/day.png";
-import nightImage from "@/assets/night.png";
+import dayImage from "@/assets/images/day.png";
+import nightImage from "@/assets/images/night.png";
 
 const props = defineProps({
     city: String,

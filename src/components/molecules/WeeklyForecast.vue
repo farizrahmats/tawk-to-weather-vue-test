@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 
-import carretRightIco from "@/assets/carret-right.svg";
+import carretRightIco from "@/assets/icon/carret-right.svg";
 
 defineProps<{ weeklyForecast: any[] }>();
 

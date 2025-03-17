@@ -9,7 +9,12 @@
             >
                 <div class="flex justify-between w-full z-10 p-8">
                     <!-- Back Button -->
-                    <button @click="goBack" class="text-gray-700">❮</button>
+                    <button
+                        @click="goBack"
+                        class="text-gray-700 cursor-pointer"
+                    >
+                        ❮
+                    </button>
                     <div class="w-64 flex-auto">
                         <h1
                             class="profile-form__title text-2xl font-bold text-center"
@@ -36,7 +41,7 @@
                             <img
                                 :src="editIco"
                                 alt="Edit Icon"
-                                class="w-5 h-5 bg-[#f5f5f5] rounded-full p-1"
+                                class="w-8 h-8 bg-[#f5f5f5] rounded-full p-1 cursor-pointer"
                             />
                         </span>
                     </label>
@@ -120,8 +125,8 @@
 import { ref, onMounted } from "vue";
 import * as yup from "yup";
 
-import avatarIco from "@/assets/avatar.svg";
-import editIco from "@/assets/edit-line.svg";
+import avatarIco from "@/assets/icon/avatar.svg";
+import editIco from "@/assets/icon/edit-line.svg";
 
 // Form state
 const form = ref({

@@ -13,7 +13,7 @@
                 </div>
                 <!-- Profile Button -->
                 <button @click="goToProfile" class="text-gray-700">
-                    <img :src="userIco" alt="User Icon" class="w-5 h-5" />
+                    <Icon :icon="userIco" alt="User Icon" />
                 </button>
             </div>
 
@@ -39,8 +39,9 @@ import { useRouter } from "vue-router";
 import { useWeatherStore } from "@/store/weatherStore";
 import SearchBar from "@/components/molecules/SearchBar.vue";
 import WeatherCard from "@/components/WeatherCard.vue";
+import Icon from "@/components/atoms/Icon.vue";
 
-import userIco from "@/assets/user.svg";
+import userIco from "@/assets/icon/user.svg";
 
 const router = useRouter();
 const weatherStore = useWeatherStore();
