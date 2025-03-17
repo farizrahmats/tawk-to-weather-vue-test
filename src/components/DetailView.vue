@@ -15,7 +15,12 @@
                     <h2 class="weather-detail__location text-sm font-semibold">
                         {{ weather.name }}
                     </h2>
-                    <img :src="trashIco" alt="Trash Icon" class="w-4 h-4" />
+                    <img
+                        :src="trashIco"
+                        alt="Trash Icon"
+                        class="w-4 h-4"
+                        @click="deleteWeather(weather.name)"
+                    />
                 </div>
                 <p class="weather-detail__date text-sm mt-6">
                     {{ formattedDate }}
@@ -127,6 +132,11 @@ const formattedTime = computed(() =>
 
 const getWeatherIcon = (icon: string) =>
     `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+const deleteWeather = async (city: any) => {
+    await weatherStore.removeWeather(city);
+    window.history.back();
+};
 </script>
 
 <style scoped>

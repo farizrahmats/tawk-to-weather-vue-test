@@ -37,6 +37,13 @@ export const useWeatherStore = defineStore('weather', () => {
         }
     };
 
+    const removeWeather = (city: string) => {
+        const index = weatherReports.value.findIndex(weather => weather.name === city);
+        if (index !== -1) {
+            weatherReports.value.splice(index, 1); // Remove 1 element at index
+        }
+    };
+
     const getForecastHourly = async (city: string) => {
         loading.value = true;
         error.value = null;
@@ -63,5 +70,17 @@ export const useWeatherStore = defineStore('weather', () => {
         }
     }
 
-    return { weatherReports, weatherDetail, forecast, cities, loading, error, getWeather, getWeatherDetail, getForecastHourly, getCities };
+    return {
+        weatherReports,
+        weatherDetail,
+        forecast,
+        cities,
+        loading,
+        error,
+        removeWeather,
+        getWeather,
+        getWeatherDetail,
+        getForecastHourly,
+        getCities
+    };
 });
